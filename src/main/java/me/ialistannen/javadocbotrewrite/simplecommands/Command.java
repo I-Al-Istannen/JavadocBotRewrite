@@ -94,7 +94,9 @@ public abstract class Command {
 
     String formatContent = "```\n%s\n```";
     String classNames = javadocClasses.stream()
-        .map(JavadocClass::getNameWithModifiers)
+        .map(
+            javadocClass -> javadocClass.getParentPackage().getName() + "." + javadocClass.getName()
+        )
         .collect(Collectors.joining("\n"));
 
     sendLargeMessage(channel, classNames, formatContent);

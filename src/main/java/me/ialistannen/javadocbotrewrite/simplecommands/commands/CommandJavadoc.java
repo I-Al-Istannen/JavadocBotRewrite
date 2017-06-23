@@ -4,8 +4,10 @@ import java.util.List;
 import java.util.Optional;
 import me.ialistannen.javadocbot.javadoc.model.JavadocClass;
 import me.ialistannen.javadocbot.javadoc.model.JavadocMethod;
+import me.ialistannen.javadocbotrewrite.icons.IconCollection;
 import me.ialistannen.javadocbotrewrite.simplecommands.Command;
 import me.ialistannen.javadocbotrewrite.util.JavadocFetcher;
+import me.ialistannen.javadocbotrewrite.util.MessageUtil;
 import me.ialistannen.javadocbotrewrite.util.StringUtil;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.MessageChannel;
@@ -74,10 +76,26 @@ public class CommandJavadoc extends Command {
     description = StringUtil.truncateToSize(MessageEmbed.TEXT_MAX_LENGTH, description);
 
     EmbedBuilder embedBuilder = new EmbedBuilder()
-        .setTitle(StringUtil.stripFormatting(method.getDeclaration()), method.getUrl())
+        .setAuthor(
+            StringUtil.stripFormatting(method.getDeclaration()),
+            method.getUrl(),
+            getMethodIcon(method)
+        )
         .setDescription(description);
 
-    channel.sendMessage(embedBuilder.build()).queue();
+    MessageUtil.sendAndThen(
+        MessageUtil.defaultLongDuration(),
+        channel.sendMessage(embedBuilder.build()),
+        MessageUtil.deleteMessageConsumer()
+    );
+  }
+
+  private String getMethodIcon(JavadocMethod method) {
+    String declaration = StringUtil.sanitizeSpaces(method.getDeclaration());
+    if (declaration.contains("abstract ")) {
+      return IconCollection.METHOD_ABSTRACT.getUrl();
+    }
+    return IconCollection.METHOD.getUrl();
   }
 
   private void sendJavadocClass(MessageChannel channel, JavadocClass javadocClass) {
@@ -96,12 +114,37 @@ public class CommandJavadoc extends Command {
     description = StringUtil.truncateToSize(MessageEmbed.TEXT_MAX_LENGTH, description);
 
     EmbedBuilder embedBuilder = new EmbedBuilder()
-        .setTitle(
+        .setAuthor(
             StringUtil.stripFormatting(javadocClass.getNameWithModifiers()),
-            javadocClass.getUrl()
+            javadocClass.getUrl(),
+            getClassIcon(javadocClass)
         )
         .setDescription(description);
 
-    channel.sendMessage(embedBuilder.build()).queue();
+    MessageUtil.sendAndThen(
+        MessageUtil.defaultLongDuration(),
+        channel.sendMessage(embedBuilder.build()),
+        MessageUtil.deleteMessageConsumer()
+    );
+  }
+
+  private String getClassIcon(JavadocClass javadocClass) {
+    String nameWithModifiers = StringUtil.sanitizeSpaces(javadocClass.getNameWithModifiers());
+    if (nameWithModifiers.contains("interface ")) {
+      return IconCollection.INTERFACE.getUrl();
+    }
+    if (nameWithModifiers.contains("abstract ")) {
+      return IconCollection.CLASS_ABSTRACT.getUrl();
+    }
+    if (nameWithModifiers.contains("final ")) {
+      return IconCollection.CLASS_FINAL.getUrl();
+    }
+    if (nameWithModifiers.contains("enum ")) {
+      return IconCollection.CLASS_ENUM.getUrl();
+    }
+    if (nameWithModifiers.contains("annotation ")) {
+      return IconCollection.CLASS_ANNOTATION.getUrl();
+    }
+    return IconCollection.CLASS.getUrl();
   }
 }

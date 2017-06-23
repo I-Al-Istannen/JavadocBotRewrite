@@ -109,6 +109,13 @@ public class MessageUtil {
   }
 
   /**
+   * @return The default {@link Duration} for <strong>long</strong> actions.
+   */
+  public static Duration defaultLongDuration() {
+    return Duration.ofMinutes(2);
+  }
+
+  /**
    * @return A {@link Consumer} that will delete the message
    */
   public static Consumer<Message> deleteMessageConsumer() {
