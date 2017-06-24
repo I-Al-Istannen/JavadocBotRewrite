@@ -1,5 +1,6 @@
 package me.ialistannen.javadocbotrewrite.simplecommands;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -99,7 +100,7 @@ public abstract class Command {
         )
         .collect(Collectors.joining("\n"));
 
-    sendLargeMessage(channel, classNames, formatContent);
+    sendLargeQuickDeleteMessage(channel, classNames, formatContent);
   }
 
   /**
@@ -126,7 +127,7 @@ public abstract class Command {
         .map(JavadocMethod::getNameWithParameters)
         .collect(Collectors.joining("\n"));
 
-    sendLargeMessage(channel, classNames, formatContent);
+    sendLargeQuickDeleteMessage(channel, classNames, formatContent);
   }
 
   /**
@@ -159,12 +160,30 @@ public abstract class Command {
   /**
    * Sends a large message. Split by `\n` if possible.
    *
+   * <em>Will use {@link MessageUtil#defaultDuration()}.</em>
+   *
    * @param channel The {@link MessageChannel} to send it in
    * @param content The content to break up in chunks. It may be large.
    * @param format The format to apply. The first and only replacement will be the split up
    * content.
+   * @see #sendLargeMessage(MessageChannel, String, String, Duration)
    */
-  protected void sendLargeMessage(MessageChannel channel, String content, String format) {
+  protected void sendLargeQuickDeleteMessage(MessageChannel channel, String content,
+      String format) {
+    sendLargeMessage(channel, content, format, MessageUtil.defaultDuration());
+  }
+
+  /**
+   * Sends a large message. Split by `\n` if possible.
+   *
+   * @param channel The {@link MessageChannel} to send it in
+   * @param content The content to break up in chunks. It may be large.
+   * @param format The format to apply. The first and only replacement will be the split up
+   * content.
+   * @param deleteTime The {@link Duration} until it is deleted
+   */
+  protected void sendLargeMessage(MessageChannel channel, String content, String format,
+      Duration deleteTime) {
     List<String> parts = MessageUtil.sliceMessage(
         content, MAX_TEXT_LENGTH - format.length(), character -> character == '\n'
     );
@@ -172,7 +191,7 @@ public abstract class Command {
       String message = String.format(format, messagePart);
 
       MessageUtil.sendAndThen(
-          channel.sendMessage(message), MessageUtil.deleteMessageConsumer()
+          deleteTime, channel.sendMessage(message), MessageUtil.deleteMessageConsumer()
       );
     }
   }

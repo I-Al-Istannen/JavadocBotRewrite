@@ -50,7 +50,7 @@ public class CommandListMethods extends Command {
     String format = "**Methods:**"
         + "\n```\n%s\n```";
 
-    sendLargeMessage(channel, methodsAsString, format);
+    sendLargeQuickDeleteMessage(channel, methodsAsString, format);
 
     return CommandResult.ACCEPTED;
   }

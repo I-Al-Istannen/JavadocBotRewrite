@@ -7,6 +7,7 @@ import java.util.Optional;
 import me.ialistannen.javadocbotrewrite.simplecommands.Command.CommandResult;
 import me.ialistannen.javadocbotrewrite.simplecommands.commands.CommandJavadoc;
 import me.ialistannen.javadocbotrewrite.simplecommands.commands.CommandListMethods;
+import me.ialistannen.javadocbotrewrite.simplecommands.commands.CommandListPackages;
 import me.ialistannen.javadocbotrewrite.simplecommands.commands.CommandPackage;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -33,6 +34,7 @@ public class CommandHandler extends ListenerAdapter {
     addCommand(new CommandListMethods());
     addCommand(new CommandJavadoc());
     addCommand(new CommandPackage());
+    addCommand(new CommandListPackages());
   }
 
   /**

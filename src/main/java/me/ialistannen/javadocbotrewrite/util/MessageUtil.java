@@ -2,6 +2,7 @@ package me.ialistannen.javadocbotrewrite.util;
 
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -63,6 +64,11 @@ public class MessageUtil {
    */
   public static List<String> sliceMessage(String message, int maxLength,
       Predicate<Character> isTerminator) {
+
+    if (message.isEmpty()) {
+      return Collections.singletonList("");
+    }
+
     List<String> messages = new ArrayList<>();
 
     int position = 0;

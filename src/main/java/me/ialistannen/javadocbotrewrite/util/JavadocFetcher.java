@@ -59,17 +59,6 @@ public class JavadocFetcher {
   }
 
   /**
-   * Returns all methods with the given name.
-   *
-   * @param javadocClass The {@link JavadocClass} to get them from
-   * @param name The name of the method
-   * @return All methods with that name
-   */
-  public static List<JavadocMethod> getMethod(JavadocClass javadocClass, String name) {
-    return javadocManager.getMethodsWithName(javadocClass, name);
-  }
-
-  /**
    * Returns all methods with the given name and parameters.
    *
    * @param javadocClass The {@link JavadocClass} to get them from
@@ -90,5 +79,14 @@ public class JavadocFetcher {
    */
   public static Optional<Package> getPackage(String name) {
     return javadocManager.getPackage(name);
+  }
+
+  /**
+   * Returns all packages
+   *
+   * @return All packages
+   */
+  public static List<Package> getAllPackages() {
+    return javadocManager.getAllPackages();
   }
 }
