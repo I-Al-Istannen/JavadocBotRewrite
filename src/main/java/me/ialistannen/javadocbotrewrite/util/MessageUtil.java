@@ -94,20 +94,6 @@ public class MessageUtil {
   }
 
   /**
-   * Slices a message into chunks.
-   *
-   * Uses {@link Character#isWhitespace} as the terminator predicate.
-   *
-   * @param message The Message to slice
-   * @param maxLength The maximum length of the message
-   * @return The sliced message parts
-   * @see #sliceMessage(String, int, Predicate)
-   */
-  public static List<String> sliceMessage(String message, int maxLength) {
-    return sliceMessage(message, maxLength, Character::isWhitespace);
-  }
-
-  /**
    * @return The default {@link Duration} for the actions
    */
   public static Duration defaultDuration() {

@@ -2,9 +2,11 @@ package me.ialistannen.javadocbotrewrite.simplecommands;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import me.ialistannen.javadocbotrewrite.simplecommands.Command.CommandResult;
+import me.ialistannen.javadocbotrewrite.simplecommands.commands.CommandHelp;
 import me.ialistannen.javadocbotrewrite.simplecommands.commands.CommandJavadoc;
 import me.ialistannen.javadocbotrewrite.simplecommands.commands.CommandListMethods;
 import me.ialistannen.javadocbotrewrite.simplecommands.commands.CommandListPackages;
@@ -40,6 +42,8 @@ public class CommandHandler extends ListenerAdapter {
     addCommand(new CommandListPackages());
 
     addCommand(new CommandSetBaseUrl());
+
+    addCommand(new CommandHelp());
   }
 
   /**
@@ -52,7 +56,6 @@ public class CommandHandler extends ListenerAdapter {
       commands.add(command);
     }
   }
-
 
   @Override
   public void onMessageReceived(MessageReceivedEvent event) {
@@ -74,7 +77,7 @@ public class CommandHandler extends ListenerAdapter {
 
       if (command.execute(event.getChannel(), message, arguments) == CommandResult.SEND_USAGE) {
         String usageFormat = "Command usage: %s";
-        String usage = String.format(command.getUsage(), prefix);
+        String usage = command.getUsage(prefix);
         String usageMessage = String.format(usageFormat, usage);
 
         event.getTextChannel().sendMessage(usageMessage).queue();
@@ -95,5 +98,19 @@ public class CommandHandler extends ListenerAdapter {
   @SuppressWarnings("SameParameterValue")
   private <T> T[] subArray(int startPos, T[] array) {
     return Arrays.copyOfRange(array, startPos, array.length);
+  }
+
+  /**
+   * @return A List with all commands. Unmodifiable.
+   */
+  public List<Command> getCommands() {
+    return Collections.unmodifiableList(commands);
+  }
+
+  /**
+   * @return The command prefix
+   */
+  public String getPrefix() {
+    return prefix;
   }
 }

@@ -33,8 +33,8 @@ public abstract class Command {
     return keyword;
   }
 
-  public String getUsage() {
-    return usage;
+  public String getUsage(String prefix) {
+    return String.format(usage, prefix);
   }
 
   public String getDescription() {
@@ -47,7 +47,7 @@ public abstract class Command {
    * @param channel The {@link MessageChannel} the event occurred in
    * @param message The {@link Message} that triggered the command.
    * @param arguments The arguments passed to the command
-   * @return The result of exeucting the command
+   * @return The result of executing the command
    */
   public abstract CommandResult execute(MessageChannel channel, Message message,
       String[] arguments);
@@ -84,7 +84,7 @@ public abstract class Command {
    * @param javadocClasses The found {@link JavadocClass}es
    * @param query The query the user used
    */
-  protected void sendTooManyClassesFound(MessageChannel channel, List<JavadocClass> javadocClasses,
+  private void sendTooManyClassesFound(MessageChannel channel, List<JavadocClass> javadocClasses,
       String query) {
 
     String formatHeader = "**Error:**"
@@ -139,7 +139,7 @@ public abstract class Command {
    * @param channel The {@link MessageChannel} to send it in
    * @param query The query the user used
    */
-  protected void sendNoClassesFound(MessageChannel channel, String query) {
+  private void sendNoClassesFound(MessageChannel channel, String query) {
     String format = "**Error:**\nDid not find a class for query `%s`";
     String message = String.format(format, query);
 

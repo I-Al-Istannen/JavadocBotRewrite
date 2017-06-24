@@ -21,7 +21,7 @@ public class CommandSetBaseUrl extends Command {
   public CommandSetBaseUrl() {
     super(
         "setBaseUrl",
-        "%ssetBaseUrl <url|java|javafx|spigot>",
+        "%ssetBaseUrl <url | java | javafx | spigot>",
         "Sets the base url for the javadoc fetcher."
     );
 

@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import javax.security.auth.login.LoginException;
 import me.ialistannen.javadocbotrewrite.simplecommands.CommandHandler;
 import net.dv8tion.jda.core.AccountType;
-import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 
@@ -17,15 +16,37 @@ import net.dv8tion.jda.core.exceptions.RateLimitedException;
  */
 public class JavadocBot {
 
-  private JDA jda;
+  private static JavadocBot instance;
+
+  private final CommandHandler commandHandler;
 
   private JavadocBot(String token)
       throws LoginException, InterruptedException, RateLimitedException {
 
-    jda = new JDABuilder(AccountType.BOT)
+    if (instance != null) {
+      throw new UnsupportedOperationException("You can not instantiate me twice.");
+    }
+    instance = this;
+
+    commandHandler = new CommandHandler("-javadoc.");
+    new JDABuilder(AccountType.BOT)
         .setToken(token)
-        .addEventListener(new CommandHandler("-javadoc."))
+        .addEventListener(commandHandler)
         .buildBlocking();
+  }
+
+  /**
+   * @return The {@link CommandHandler}
+   */
+  public CommandHandler getCommandHandler() {
+    return commandHandler;
+  }
+
+  /**
+   * @return The instance of the bot
+   */
+  public static JavadocBot getInstance() {
+    return instance;
   }
 
   public static void main(String[] args) throws Exception {
