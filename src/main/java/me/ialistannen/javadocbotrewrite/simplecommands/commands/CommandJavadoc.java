@@ -10,6 +10,7 @@ import me.ialistannen.javadocbotrewrite.util.JavadocFetcher;
 import me.ialistannen.javadocbotrewrite.util.MessageUtil;
 import me.ialistannen.javadocbotrewrite.util.StringUtil;
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.MessageEmbed;
 
@@ -19,11 +20,11 @@ import net.dv8tion.jda.core.entities.MessageEmbed;
 public class CommandJavadoc extends Command {
 
   public CommandJavadoc() {
-    super("doc", "%s doc <Class>[#method]", "Shows javadoc for a class or method");
+    super("doc", "%sdoc <Class>[#method]", "Shows javadoc for a class or method");
   }
 
   @Override
-  public CommandResult execute(MessageChannel channel, String[] arguments) {
+  public CommandResult execute(MessageChannel channel, Message message,  String[] arguments) {
     if (arguments.length < 1) {
       return CommandResult.SEND_USAGE;
     }

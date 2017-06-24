@@ -9,6 +9,7 @@ import me.ialistannen.javadocbot.javadoc.model.JavadocClass;
 import me.ialistannen.javadocbot.javadoc.model.JavadocMethod;
 import me.ialistannen.javadocbotrewrite.util.JavadocFetcher;
 import me.ialistannen.javadocbotrewrite.util.MessageUtil;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 
 /**
@@ -44,10 +45,12 @@ public abstract class Command {
    * Execute the command.
    *
    * @param channel The {@link MessageChannel} the event occurred in
+   * @param message The {@link Message} that triggered the command.
    * @param arguments The arguments passed to the command
    * @return The result of exeucting the command
    */
-  public abstract CommandResult execute(MessageChannel channel, String[] arguments);
+  public abstract CommandResult execute(MessageChannel channel, Message message,
+      String[] arguments);
 
   /**
    * Tried to find a single class ending with the given class name.

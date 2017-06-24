@@ -11,6 +11,7 @@ import me.ialistannen.javadocbot.javadoc.model.JavadocMethod;
 import me.ialistannen.javadocbotrewrite.simplecommands.Command;
 import me.ialistannen.javadocbotrewrite.util.JavadocFetcher;
 import me.ialistannen.javadocbotrewrite.util.StringUtil;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 
 /**
@@ -22,13 +23,13 @@ public class CommandListMethods extends Command {
   public CommandListMethods() {
     super(
         "listMethods",
-        "%s listMethods <class>",
+        "%slistMethods <class>",
         "Lists all methods of a class."
     );
   }
 
   @Override
-  public CommandResult execute(MessageChannel channel, String[] arguments) {
+  public CommandResult execute(MessageChannel channel, Message message,  String[] arguments) {
     if (arguments.length < 1) {
       return CommandResult.SEND_USAGE;
     }

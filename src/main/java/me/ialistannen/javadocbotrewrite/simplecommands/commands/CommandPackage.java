@@ -8,6 +8,7 @@ import me.ialistannen.javadocbotrewrite.util.JavadocFetcher;
 import me.ialistannen.javadocbotrewrite.util.MessageUtil;
 import me.ialistannen.javadocbotrewrite.util.StringUtil;
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.MessageEmbed;
 
@@ -19,13 +20,13 @@ public class CommandPackage extends Command {
   public CommandPackage() {
     super(
         "package",
-        "%s package <package name>",
+        "%spackage <package name>",
         "Shows information about a package."
     );
   }
 
   @Override
-  public CommandResult execute(MessageChannel channel, String[] arguments) {
+  public CommandResult execute(MessageChannel channel, Message message, String[] arguments) {
     if (arguments.length < 1) {
       return CommandResult.SEND_USAGE;
     }
@@ -36,9 +37,9 @@ public class CommandPackage extends Command {
     if (!packageOptional.isPresent()) {
       String messageFormat = "**Error:**"
           + "\n*Did not find a package with the name* '%s'.";
-      String message = String.format(messageFormat, packageName);
+      String msg = String.format(messageFormat, packageName);
 
-      MessageUtil.sendAndThen(channel.sendMessage(message), MessageUtil.deleteMessageConsumer());
+      MessageUtil.sendAndThen(channel.sendMessage(msg), MessageUtil.deleteMessageConsumer());
       return CommandResult.ACCEPTED;
     }
 

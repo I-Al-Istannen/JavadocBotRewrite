@@ -9,6 +9,8 @@ import me.ialistannen.javadocbotrewrite.simplecommands.commands.CommandJavadoc;
 import me.ialistannen.javadocbotrewrite.simplecommands.commands.CommandListMethods;
 import me.ialistannen.javadocbotrewrite.simplecommands.commands.CommandListPackages;
 import me.ialistannen.javadocbotrewrite.simplecommands.commands.CommandPackage;
+import me.ialistannen.javadocbotrewrite.simplecommands.commands.CommandSetBaseUrl;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.EventListener;
@@ -31,10 +33,13 @@ public class CommandHandler extends ListenerAdapter {
   public CommandHandler(String prefix) {
     this.prefix = prefix;
 
-    addCommand(new CommandListMethods());
     addCommand(new CommandJavadoc());
     addCommand(new CommandPackage());
+
+    addCommand(new CommandListMethods());
     addCommand(new CommandListPackages());
+
+    addCommand(new CommandSetBaseUrl());
   }
 
   /**
@@ -55,10 +60,9 @@ public class CommandHandler extends ListenerAdapter {
       return;
     }
 
-    String content = event.getMessage().getStrippedContent();
+    Message message = event.getMessage();
+    String content = message.getStrippedContent();
     String[] parts = content.split(" ");
-
-    System.out.println(content + "  " + Arrays.toString(parts));
 
     if (parts.length < 1) {
       return;
@@ -68,12 +72,12 @@ public class CommandHandler extends ListenerAdapter {
     findCommand(keyword).ifPresent(command -> {
       String[] arguments = subArray(1, parts);
 
-      if (command.execute(event.getChannel(), arguments) == CommandResult.SEND_USAGE) {
+      if (command.execute(event.getChannel(), message, arguments) == CommandResult.SEND_USAGE) {
         String usageFormat = "Command usage: %s";
         String usage = String.format(command.getUsage(), prefix);
-        String message = String.format(usageFormat, usage);
+        String usageMessage = String.format(usageFormat, usage);
 
-        event.getTextChannel().sendMessage(message).queue();
+        event.getTextChannel().sendMessage(usageMessage).queue();
       }
     });
   }
