@@ -24,7 +24,7 @@ public class CommandHelp extends Command {
 
     EmbedBuilder embedBuilder = new EmbedBuilder()
         .setTitle("Help")
-        .setDescription("\n\n.\n\n");
+        .setDescription("\n\n_ _\n\n");
 
     String valueFormat = "%s"
         + "\n`%s`";
