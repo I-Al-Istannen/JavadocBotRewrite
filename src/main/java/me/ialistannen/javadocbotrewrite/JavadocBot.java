@@ -4,6 +4,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.stream.Collectors;
 import javax.security.auth.login.LoginException;
 import me.ialistannen.javadocbotrewrite.simplecommands.CommandHandler;
@@ -58,7 +59,7 @@ public class JavadocBot {
       new JavadocBot(args[0]);
       return;
     }
-    String pathString = String.join(" ", args);
+    String pathString = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
 
     System.out.printf("Path is: '%s'%n", pathString);
 
