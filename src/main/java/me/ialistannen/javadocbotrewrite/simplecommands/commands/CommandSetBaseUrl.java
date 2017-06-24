@@ -3,6 +3,7 @@ package me.ialistannen.javadocbotrewrite.simplecommands.commands;
 import java.util.HashMap;
 import java.util.Map;
 import me.ialistannen.javadocbotrewrite.simplecommands.Command;
+import me.ialistannen.javadocbotrewrite.simplecommands.permissions.PermissionProvider.PermissionLevel;
 import me.ialistannen.javadocbotrewrite.util.JavadocFetcher;
 import me.ialistannen.javadocbotrewrite.util.MessageUtil;
 import net.dv8tion.jda.core.entities.Guild;
@@ -40,7 +41,7 @@ public class CommandSetBaseUrl extends Command {
       Guild guild = ((TextChannel) channel).getGuild();
       Member member = guild.getMember(message.getAuthor());
 
-      if (!hasPermission(member)) {
+      if (!hasPermission(PermissionLevel.ADMIN, (TextChannel) channel, member)) {
         String msg = "**Error:** *No permission!*";
         MessageUtil.sendAndThen(channel.sendMessage(msg), MessageUtil.deleteMessageConsumer());
 
@@ -62,10 +63,5 @@ public class CommandSetBaseUrl extends Command {
     JavadocFetcher.setUrl(url);
 
     return CommandResult.ACCEPTED;
-  }
-
-  private boolean hasPermission(Member member) {
-    return member.getRoles().stream()
-        .anyMatch(role -> role.getName().equalsIgnoreCase("Bot Master"));
   }
 }

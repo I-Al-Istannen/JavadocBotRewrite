@@ -7,10 +7,14 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import me.ialistannen.javadocbot.javadoc.model.JavadocClass;
 import me.ialistannen.javadocbot.javadoc.model.JavadocMethod;
+import me.ialistannen.javadocbotrewrite.simplecommands.permissions.PermissionProvider;
+import me.ialistannen.javadocbotrewrite.simplecommands.permissions.PermissionProvider.PermissionLevel;
 import me.ialistannen.javadocbotrewrite.util.JavadocFetcher;
 import me.ialistannen.javadocbotrewrite.util.MessageUtil;
+import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.TextChannel;
 
 /**
  * The command base.
@@ -22,6 +26,8 @@ public abstract class Command {
   private String keyword;
   private String usage;
   private String description;
+
+  private PermissionProvider permissionProvider = PermissionProvider.getDefault();
 
   public Command(String keyword, String usage, String description) {
     this.keyword = keyword;
@@ -51,6 +57,18 @@ public abstract class Command {
    */
   public abstract CommandResult execute(MessageChannel channel, Message message,
       String[] arguments);
+
+  /**
+   * Checks if a user can use a special kind of commands.
+   *
+   * @param level The {@link PermissionLevel} of the command
+   * @param channel The channel the message occurred in
+   * @param member The {@link Member} that send the message
+   * @return True if the user has the rights to use the commands
+   */
+  protected boolean hasPermission(PermissionLevel level, TextChannel channel, Member member) {
+    return permissionProvider.hasPermission(level, channel, member);
+  }
 
   /**
    * Tried to find a single class ending with the given class name.

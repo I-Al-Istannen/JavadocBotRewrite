@@ -11,6 +11,7 @@ import me.ialistannen.javadocbotrewrite.simplecommands.commands.CommandJavadoc;
 import me.ialistannen.javadocbotrewrite.simplecommands.commands.CommandListMethods;
 import me.ialistannen.javadocbotrewrite.simplecommands.commands.CommandListPackages;
 import me.ialistannen.javadocbotrewrite.simplecommands.commands.CommandPackage;
+import me.ialistannen.javadocbotrewrite.simplecommands.commands.CommandQuit;
 import me.ialistannen.javadocbotrewrite.simplecommands.commands.CommandSetBaseUrl;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.User;
@@ -44,6 +45,7 @@ public class CommandHandler extends ListenerAdapter {
     addCommand(new CommandSetBaseUrl());
 
     addCommand(new CommandHelp());
+    addCommand(new CommandQuit());
   }
 
   /**
