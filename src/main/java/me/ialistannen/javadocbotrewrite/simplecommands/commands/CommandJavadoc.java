@@ -87,7 +87,7 @@ public class CommandJavadoc extends Command {
     MessageUtil.sendAndThen(
         MessageUtil.defaultLongDuration(),
         channel.sendMessage(embedBuilder.build()),
-        MessageUtil.deleteMessageConsumer()
+        MessageUtil.nopConsumer()
     );
   }
 
@@ -125,7 +125,7 @@ public class CommandJavadoc extends Command {
     MessageUtil.sendAndThen(
         MessageUtil.defaultLongDuration(),
         channel.sendMessage(embedBuilder.build()),
-        MessageUtil.deleteMessageConsumer()
+        MessageUtil.nopConsumer()
     );
   }
 

@@ -113,4 +113,12 @@ public class MessageUtil {
   public static Consumer<Message> deleteMessageConsumer() {
     return message -> message.delete().queue();
   }
+
+  /**
+   * @return A {@link Consumer} that will do nothing
+   */
+  public static Consumer<Message> nopConsumer() {
+    return message -> {
+    };
+  }
 }

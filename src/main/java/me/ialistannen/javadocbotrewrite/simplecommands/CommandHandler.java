@@ -5,6 +5,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.annotation.Nonnull;
 import me.ialistannen.javadocbotrewrite.simplecommands.Command.CommandResult;
 import me.ialistannen.javadocbotrewrite.simplecommands.commands.CommandHelp;
 import me.ialistannen.javadocbotrewrite.simplecommands.commands.CommandJavadoc;
@@ -13,6 +19,7 @@ import me.ialistannen.javadocbotrewrite.simplecommands.commands.CommandListPacka
 import me.ialistannen.javadocbotrewrite.simplecommands.commands.CommandPackage;
 import me.ialistannen.javadocbotrewrite.simplecommands.commands.CommandQuit;
 import me.ialistannen.javadocbotrewrite.simplecommands.commands.CommandSetBaseUrl;
+import me.ialistannen.javadocbotrewrite.util.MessageUtil;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -24,8 +31,13 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
  */
 public class CommandHandler extends ListenerAdapter {
 
-  private List<Command> commands = new ArrayList<>();
+  private static final Logger LOGGER = Logger.getLogger("CommandHandler");
 
+  private ExecutorService executorService = Executors.newCachedThreadPool(
+      new ExceptionReportingThreadFactory()
+  );
+
+  private List<Command> commands = new ArrayList<>();
   private String prefix;
 
   /**
@@ -77,14 +89,32 @@ public class CommandHandler extends ListenerAdapter {
     findCommand(keyword).ifPresent(command -> {
       String[] arguments = subArray(1, parts);
 
-      if (command.execute(event.getChannel(), message, arguments) == CommandResult.SEND_USAGE) {
-        String usageFormat = "Command usage: %s";
-        String usage = command.getUsage(prefix);
-        String usageMessage = String.format(usageFormat, usage);
+      event.getMessage().delete().queue();
 
-        event.getTextChannel().sendMessage(usageMessage).queue();
-      }
+      LOGGER.info("Running command: " + command.getKeyword());
+      executorService.submit(() -> executeCommand(event, message, command, arguments));
     });
+  }
+
+  /**
+   * @param event The MessageReceivedEvent that caused it
+   * @param message The {@link Message} that caused it
+   * @param command The {@link Command} to execute
+   * @param arguments The {@link Command}'s arguments
+   */
+  private void executeCommand(MessageReceivedEvent event, Message message, Command command,
+      String[] arguments) {
+
+    if (command.execute(event.getChannel(), message, arguments) == CommandResult.SEND_USAGE) {
+      String usageFormat = "*Command usage:* `%s`";
+      String usage = command.getUsage(prefix);
+      String usageMessage = String.format(usageFormat, usage);
+
+      MessageUtil.sendAndThen(
+          event.getTextChannel().sendMessage(usageMessage),
+          MessageUtil.deleteMessageConsumer()
+      );
+    }
   }
 
   private boolean isMe(User user) {
@@ -114,5 +144,23 @@ public class CommandHandler extends ListenerAdapter {
    */
   public String getPrefix() {
     return prefix;
+  }
+
+  private static class ExceptionReportingThreadFactory implements ThreadFactory {
+
+    @Override
+    public Thread newThread(@Nonnull Runnable r) {
+      return new Thread(andReportException(r));
+    }
+
+    private Runnable andReportException(Runnable r) {
+      return () -> {
+        try {
+          r.run();
+        } catch (Throwable e) {
+          LOGGER.log(Level.WARNING, "An exception was thrown inside the executor.", e);
+        }
+      };
+    }
   }
 }

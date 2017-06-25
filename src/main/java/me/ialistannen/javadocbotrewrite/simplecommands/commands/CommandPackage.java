@@ -62,7 +62,7 @@ public class CommandPackage extends Command {
     MessageUtil.sendAndThen(
         MessageUtil.defaultLongDuration(),
         channel.sendMessage(embedBuilder.build()),
-        MessageUtil.deleteMessageConsumer()
+        MessageUtil.nopConsumer()
     );
   }
 }
