@@ -4,7 +4,6 @@ import java.util.Optional;
 import me.ialistannen.javadocbot.javadoc.model.Package;
 import me.ialistannen.javadocbotrewrite.icons.IconCollection;
 import me.ialistannen.javadocbotrewrite.simplecommands.Command;
-import me.ialistannen.javadocbotrewrite.util.JavadocFetcher;
 import me.ialistannen.javadocbotrewrite.util.MessageUtil;
 import me.ialistannen.javadocbotrewrite.util.StringUtil;
 import net.dv8tion.jda.core.EmbedBuilder;
@@ -32,7 +31,7 @@ public class CommandPackage extends Command {
     }
     String packageName = arguments[0];
 
-    Optional<Package> packageOptional = JavadocFetcher.getPackage(packageName);
+    Optional<Package> packageOptional = getJavadocFetcher().getPackage(packageName);
 
     if (!packageOptional.isPresent()) {
       String messageFormat = "**Error:**"

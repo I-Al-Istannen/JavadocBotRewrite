@@ -6,7 +6,6 @@ import me.ialistannen.javadocbot.javadoc.model.JavadocClass;
 import me.ialistannen.javadocbot.javadoc.model.JavadocMethod;
 import me.ialistannen.javadocbotrewrite.icons.IconCollection;
 import me.ialistannen.javadocbotrewrite.simplecommands.Command;
-import me.ialistannen.javadocbotrewrite.util.JavadocFetcher;
 import me.ialistannen.javadocbotrewrite.util.MessageUtil;
 import me.ialistannen.javadocbotrewrite.util.StringUtil;
 import net.dv8tion.jda.core.EmbedBuilder;
@@ -24,7 +23,7 @@ public class CommandJavadoc extends Command {
   }
 
   @Override
-  public CommandResult execute(MessageChannel channel, Message message,  String[] arguments) {
+  public CommandResult execute(MessageChannel channel, Message message, String[] arguments) {
     if (arguments.length < 1) {
       return CommandResult.SEND_USAGE;
     }
@@ -56,7 +55,7 @@ public class CommandJavadoc extends Command {
   private void sendJavadocMethod(MessageChannel channel, JavadocClass javadocClass,
       String methodSelector) {
 
-    List<JavadocMethod> methods = JavadocFetcher
+    List<JavadocMethod> methods = getJavadocFetcher()
         .getMethodWithParams(javadocClass, methodSelector);
 
     if (methods.isEmpty()) {

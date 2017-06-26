@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import me.ialistannen.javadocbot.javadoc.model.JavadocClass;
 import me.ialistannen.javadocbot.javadoc.model.JavadocMethod;
+import me.ialistannen.javadocbotrewrite.JavadocBot;
 import me.ialistannen.javadocbotrewrite.simplecommands.permissions.PermissionProvider;
 import me.ialistannen.javadocbotrewrite.simplecommands.permissions.PermissionProvider.PermissionLevel;
 import me.ialistannen.javadocbotrewrite.util.JavadocFetcher;
@@ -26,13 +27,36 @@ public abstract class Command {
   private String keyword;
   private String usage;
   private String description;
+  private JavadocFetcher javadocFetcher;
 
   private PermissionProvider permissionProvider = PermissionProvider.getDefault();
 
+  /**
+   * Creates a new command with the default {@link JavadocFetcher}.
+   *
+   * @param keyword The keyword of the command
+   * @param usage The usage for the command
+   * @param description The description of the command
+   * @see #Command(String, String, String, JavadocFetcher)
+   */
   public Command(String keyword, String usage, String description) {
+    this(keyword, usage, description, JavadocBot.getInstance().getJavadocFetcher());
+  }
+
+  /**
+   * Creates a new command.
+   *
+   * @param keyword The keyword of the command
+   * @param usage The usage for the command
+   * @param description The description of the command
+   * @param javadocFetcher The {@link JavadocFetcher} to use
+   */
+  @SuppressWarnings("WeakerAccess")
+  public Command(String keyword, String usage, String description, JavadocFetcher javadocFetcher) {
     this.keyword = keyword;
     this.usage = usage;
     this.description = description;
+    this.javadocFetcher = javadocFetcher;
   }
 
   public String getKeyword() {
@@ -45,6 +69,13 @@ public abstract class Command {
 
   public String getDescription() {
     return description;
+  }
+
+  /**
+   * @return The {@link JavadocFetcher} for this command
+   */
+  protected JavadocFetcher getJavadocFetcher() {
+    return javadocFetcher;
   }
 
   /**
@@ -79,7 +110,7 @@ public abstract class Command {
    */
   protected Optional<JavadocClass> getSingleClassAndSendError(String className,
       MessageChannel channel) {
-    List<JavadocClass> javadocClasses = JavadocFetcher.getClassesEndingIn(className);
+    List<JavadocClass> javadocClasses = getJavadocFetcher().getClassesEndingIn(className);
 
     if (javadocClasses.isEmpty()) {
       sendNoClassesFound(channel, className);
@@ -161,7 +192,7 @@ public abstract class Command {
     String format = "**Error:**\nDid not find a class for query `%s`";
     String message = String.format(format, query);
 
-    channel.sendMessage(message).queue();
+    MessageUtil.sendAndThen(channel.sendMessage(message), MessageUtil.deleteMessageConsumer());
   }
 
   /**
@@ -174,7 +205,7 @@ public abstract class Command {
     String format = "**Error:**\nDid not find a method for query `%s`";
     String message = String.format(format, query);
 
-    channel.sendMessage(message).queue();
+    MessageUtil.sendAndThen(channel.sendMessage(message), MessageUtil.deleteMessageConsumer());
   }
 
 

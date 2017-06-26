@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 import me.ialistannen.javadocbot.javadoc.model.JavadocClass;
 import me.ialistannen.javadocbot.javadoc.model.JavadocMethod;
 import me.ialistannen.javadocbotrewrite.simplecommands.Command;
-import me.ialistannen.javadocbotrewrite.util.JavadocFetcher;
 import me.ialistannen.javadocbotrewrite.util.StringUtil;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
@@ -29,7 +28,7 @@ public class CommandListMethods extends Command {
   }
 
   @Override
-  public CommandResult execute(MessageChannel channel, Message message,  String[] arguments) {
+  public CommandResult execute(MessageChannel channel, Message message, String[] arguments) {
     if (arguments.length < 1) {
       return CommandResult.SEND_USAGE;
     }
@@ -42,7 +41,7 @@ public class CommandListMethods extends Command {
       return CommandResult.ACCEPTED;
     }
 
-    List<JavadocMethod> allMethods = JavadocFetcher.getAllMethods(classOptional.get());
+    List<JavadocMethod> allMethods = getJavadocFetcher().getAllMethods(classOptional.get());
     String methodsAsString = allMethods.stream()
         .map(methodToStringFunction(allMethods))
         .sorted()

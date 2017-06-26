@@ -5,7 +5,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import me.ialistannen.javadocbot.javadoc.model.Package;
 import me.ialistannen.javadocbotrewrite.simplecommands.Command;
-import me.ialistannen.javadocbotrewrite.util.JavadocFetcher;
 import me.ialistannen.javadocbotrewrite.util.MessageUtil;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
@@ -20,8 +19,8 @@ public class CommandListPackages extends Command {
   }
 
   @Override
-  public CommandResult execute(MessageChannel channel, Message message,  String[] arguments) {
-    List<Package> packages = JavadocFetcher.getAllPackages();
+  public CommandResult execute(MessageChannel channel, Message message, String[] arguments) {
+    List<Package> packages = getJavadocFetcher().getAllPackages();
 
     String packageFormat = "__%s__:"
         + "\n  _%s_";

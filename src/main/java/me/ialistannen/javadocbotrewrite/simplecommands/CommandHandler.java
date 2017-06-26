@@ -7,17 +7,17 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
 import me.ialistannen.javadocbotrewrite.simplecommands.Command.CommandResult;
+import me.ialistannen.javadocbotrewrite.simplecommands.commands.CommandGetBasePath;
 import me.ialistannen.javadocbotrewrite.simplecommands.commands.CommandHelp;
 import me.ialistannen.javadocbotrewrite.simplecommands.commands.CommandJavadoc;
 import me.ialistannen.javadocbotrewrite.simplecommands.commands.CommandListMethods;
 import me.ialistannen.javadocbotrewrite.simplecommands.commands.CommandListPackages;
 import me.ialistannen.javadocbotrewrite.simplecommands.commands.CommandPackage;
 import me.ialistannen.javadocbotrewrite.simplecommands.commands.CommandQuit;
+import me.ialistannen.javadocbotrewrite.simplecommands.commands.CommandSetBasePath;
 import me.ialistannen.javadocbotrewrite.simplecommands.commands.CommandSetBaseUrl;
 import me.ialistannen.javadocbotrewrite.util.MessageUtil;
 import net.dv8tion.jda.core.entities.Message;
@@ -33,9 +33,7 @@ public class CommandHandler extends ListenerAdapter {
 
   private static final Logger LOGGER = Logger.getLogger("CommandHandler");
 
-  private ExecutorService executorService = Executors.newCachedThreadPool(
-      new ExceptionReportingThreadFactory()
-  );
+  private ExecutorService executorService = Executors.newCachedThreadPool();
 
   private List<Command> commands = new ArrayList<>();
   private String prefix;
@@ -55,6 +53,8 @@ public class CommandHandler extends ListenerAdapter {
     addCommand(new CommandListPackages());
 
     addCommand(new CommandSetBaseUrl());
+    addCommand(new CommandSetBasePath());
+    addCommand(new CommandGetBasePath());
 
     addCommand(new CommandHelp());
     addCommand(new CommandQuit());
@@ -92,7 +92,9 @@ public class CommandHandler extends ListenerAdapter {
       event.getMessage().delete().queue();
 
       LOGGER.info("Running command: " + command.getKeyword());
-      executorService.submit(() -> executeCommand(event, message, command, arguments));
+      executorService.submit(andReportException(
+          () -> executeCommand(event, message, command, arguments)
+      ));
     });
   }
 
@@ -146,21 +148,19 @@ public class CommandHandler extends ListenerAdapter {
     return prefix;
   }
 
-  private static class ExceptionReportingThreadFactory implements ThreadFactory {
-
-    @Override
-    public Thread newThread(@Nonnull Runnable r) {
-      return new Thread(andReportException(r));
-    }
-
-    private Runnable andReportException(Runnable r) {
-      return () -> {
-        try {
-          r.run();
-        } catch (Throwable e) {
-          LOGGER.log(Level.WARNING, "An exception was thrown inside the executor.", e);
-        }
-      };
-    }
+  /**
+   * Wraps a runnable in an exception logging one.
+   *
+   * @param r The runnable to run
+   * @return A runnable that handles exceptions
+   */
+  private Runnable andReportException(Runnable r) {
+    return () -> {
+      try {
+        r.run();
+      } catch (Throwable e) {
+        LOGGER.log(Level.WARNING, "An exception was thrown inside the executor.", e);
+      }
+    };
   }
 }

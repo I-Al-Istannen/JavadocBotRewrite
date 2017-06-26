@@ -7,7 +7,9 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import javax.security.auth.login.LoginException;
+import me.ialistannen.javadocbotrewrite.config.Config;
 import me.ialistannen.javadocbotrewrite.simplecommands.CommandHandler;
+import me.ialistannen.javadocbotrewrite.util.JavadocFetcher;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
@@ -20,6 +22,8 @@ public class JavadocBot {
   private static JavadocBot instance;
 
   private final CommandHandler commandHandler;
+  private final JavadocFetcher javadocFetcher;
+  private final Config config;
 
   private JavadocBot(String token)
       throws LoginException, InterruptedException, RateLimitedException {
@@ -29,7 +33,11 @@ public class JavadocBot {
     }
     instance = this;
 
+    config = new Config("/me/ialistannen/javadocbotrewrite/config/config.properties");
+    javadocFetcher = new JavadocFetcher(config.getProperty("default_path").split("\\|"));
+    javadocFetcher.setUrl(config.getProperty("default_url"));
     commandHandler = new CommandHandler("-javadoc.");
+
     new JDABuilder(AccountType.BOT)
         .setToken(token)
         .addEventListener(commandHandler)
@@ -41,6 +49,20 @@ public class JavadocBot {
    */
   public CommandHandler getCommandHandler() {
     return commandHandler;
+  }
+
+  /**
+   * @return The {@link JavadocFetcher}
+   */
+  public JavadocFetcher getJavadocFetcher() {
+    return javadocFetcher;
+  }
+
+  /**
+   * @return The {@link Config}
+   */
+  public Config getConfig() {
+    return config;
   }
 
   /**
