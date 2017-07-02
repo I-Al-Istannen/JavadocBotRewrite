@@ -36,6 +36,7 @@ public class CommandHelp extends Command {
     }
 
     MessageUtil.sendAndThen(
+        MessageUtil.defaultLongDuration(),
         channel.sendMessage(embedBuilder.build()), MessageUtil.deleteMessageConsumer()
     );
 

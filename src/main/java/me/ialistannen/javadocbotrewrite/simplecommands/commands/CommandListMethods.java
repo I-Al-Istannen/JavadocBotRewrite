@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import me.ialistannen.javadocbot.javadoc.model.JavadocClass;
 import me.ialistannen.javadocbot.javadoc.model.JavadocMethod;
 import me.ialistannen.javadocbotrewrite.simplecommands.Command;
+import me.ialistannen.javadocbotrewrite.util.MessageUtil;
 import me.ialistannen.javadocbotrewrite.util.StringUtil;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
@@ -50,7 +51,7 @@ public class CommandListMethods extends Command {
     String format = "**Methods:**"
         + "\n```\n%s\n```";
 
-    sendLargeQuickDeleteMessage(channel, methodsAsString, format);
+    sendLargeMessage(channel, methodsAsString, format, MessageUtil.defaultLongDuration());
 
     return CommandResult.ACCEPTED;
   }
