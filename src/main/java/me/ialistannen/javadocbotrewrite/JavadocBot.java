@@ -12,6 +12,7 @@ import me.ialistannen.javadocbotrewrite.simplecommands.CommandHandler;
 import me.ialistannen.javadocbotrewrite.util.JavadocFetcher;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDABuilder;
+import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 
 /**
@@ -40,6 +41,7 @@ public class JavadocBot {
 
     new JDABuilder(AccountType.BOT)
         .setToken(token)
+        .setGame(Game.of("-javadoc.help))
         .addEventListener(commandHandler)
         .buildBlocking();
   }
