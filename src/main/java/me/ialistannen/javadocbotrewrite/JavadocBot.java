@@ -41,7 +41,7 @@ public class JavadocBot {
 
     new JDABuilder(AccountType.BOT)
         .setToken(token)
-        .setGame(Game.of("-javadoc.help))
+        .setGame(Game.of("-javadoc.help"))
         .addEventListener(commandHandler)
         .buildBlocking();
   }
